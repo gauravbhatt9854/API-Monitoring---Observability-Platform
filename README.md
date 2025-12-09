@@ -1,210 +1,90 @@
 API Monitoring & Observability Platform
-Spring Boot (Kotlin) + Next.js + Dual MongoDB + JWT Auth
 
-A complete backend + dashboard system for tracking API performance, log collection, real-time error analytics, alerts, and incident management.
+A complete API performance monitoring, log analytics, alerts, and incident management platform built using:
 
-⭐ Features
-🔧 Backend (Spring Boot)
+Spring Boot (Kotlin) — backend + collector
 
-Dual MongoDB (logsdb + metadb)
+Next.js — frontend dashboard
+
+MongoDB (Dual DB: logsdb + metadb)
+
+JWT Authentication
+
+This system captures logs from microservices, analyzes performance, and provides a modern dashboard for observability.
+
+⭐ Features Overview
+🔧 Backend (Spring Boot / Kotlin)
+
+Dual MongoDB Connection
+
+logsdb → high-volume logs
+
+metadb → users, alerts, incidents
 
 Custom API Logging Interceptor
 
 Built-in Rate Limiter (per service)
 
-JWT Authentication
+JWT Authentication (HS256)
 
-Alerts & Incident Engine
+Alert engine (5xx, slow requests, rate-limit)
 
-Modular Repository Structure
+Incident workflow
+
+Modular Services + Repos
 
 🎨 Frontend (Next.js)
 
-Secure Login (JWT)
+JWT-based authentication
 
-Dashboard with charts (Recharts)
+Modern dashboard (Recharts)
 
-Logs Explorer
+Logs Explorer with filters
 
 Alerts Center
 
-Incident Management
+Incident Management UI
 
-🧩 System Architecture
-Microservices → Interceptor → Collector Service → MongoDB(logsdb)
-                                       ↓
-                                  Dashboard APIs → MongoDB(metadb)
-                                       ↓
-                                     Frontend
+Protected routes
 
-📦 Project Structure
-C:.
-│   .env
-│   build.gradle.kts
-│   settings.gradle.kts
-│   gradlew
-│   gradlew.bat
-│
-├───src
-│   ├───main
-│   │   ├───kotlin
-│   │   │   └───com
-│   │   │       └───example
-│   │   │           └───demo
-│   │   │               │   DemoApplication.kt
-│   │   │
-│   │   │               ├───config
-│   │   │               │       DotenvConfig.kt
-│   │   │               │       LogsDbConfig.kt
-│   │   │               │       MetaDbConfig.kt
-│   │   │               │       RateLimitProperties.kt
-│   │   │               │       SecurityConfig.kt
-│   │   │               │       UserSeeder.kt
-│   │   │               │       WebConfig.kt
-│   │   │
-│   │   │               ├───controller
-│   │   │               │       AuthController.kt
-│   │   │               │       AlertController.kt
-│   │   │               │       DashboardController.kt
-│   │   │               │       IncidentController.kt
-│   │   │               │       LogController.kt
-│   │   │               │       RateLimitController.kt
-│   │   │               │       TestController.kt
-│   │   │
-│   │   │               ├───dto
-│   │   │               │       SearchParams.kt
-│   │   │
-│   │   │               ├───filter
-│   │   │               │       JwtFilter.kt
-│   │   │
-│   │   │               ├───interceptor
-│   │   │               │       ApiTrackingInterceptor.kt
-│   │   │
-│   │   │               ├───model
-│   │   │               │       User.kt
-│   │   │               │       Alert.kt
-│   │   │               │       Incident.kt
-│   │   │               │       ApiLog.kt
-│   │   │               │       RateLimitConfig.kt
-│   │   │               │       RateLimitHit.kt
-│   │   │
-│   │   │               ├───repository
-│   │   │               │   ├───logs
-│   │   │               │   │       ApiLogRepository.kt
-│   │   │               │   │       RateLimitHitRepository.kt
-│   │   │               │   └───meta
-│   │   │               │           UserRepository.kt
-│   │   │               │           AlertRepository.kt
-│   │   │               │           IncidentRepository.kt
-│   │   │               │           RateLimitConfigRepository.kt
-│   │   │
-│   │   │               ├───service
-│   │   │               │       AuthService.kt
-│   │   │               │       AlertService.kt
-│   │   │               │       IncidentService.kt
-│   │   │               │       LogService.kt
-│   │   │               │       LogQueryService.kt
-│   │   │               │       RateLimitService.kt
-│   │   │               │       DashboardService.kt
-│   │   │
-│   │   │               └───util
-│   │   │                       JwtUtil.kt
-│   │   │
-│   │   └───resources
-│   │           application.yaml
-│   │           application.properties
-│
-└───test
-        DemoApplicationTests.kt
+🧩 Architecture
+Microservices 
+     ↓ (interceptor sends logs)
+Collector API  →  logsdb (API Logs + Rate Limit Hits)
+     ↓
+Dashboard APIs → metadb (Users, Alerts, Incidents)
+     ↓
+Next.js Frontend Dashboard
 
+📁 Project Structure
+Backend (Spring Boot — Kotlin)
+src/main/kotlin/com/example/demo/
+│── config/         (DB configs, security, dotenv, seeder)
+│── controller/     (Auth, Logs, Alerts, Incidents, Dashboard)
+│── interceptor/    (ApiTrackingInterceptor.kt)
+│── filter/         (JwtFilter.kt)
+│── service/        (Auth, Log, Alert, Incident, Dashboard)
+│── repository/     (logs/* , meta/*)
+│── model/          (ApiLog, User, Alert, Incident, RateLimit*)
+│── util/           (JwtUtil.kt)
 
-C:.
-│   .env
-│   .gitignore
-│   components.json
-│   eslint.config.mjs
-│   next-env.d.ts
-│   next.config.ts
-│   package-lock.json
-│   package.json
-│   postcss.config.mjs
-│   README.md
-│   tsconfig.json
-│
-├───app
-│   │   globals.css
-│   │   layout.tsx
-│   │   page.tsx
-│   │
-│   ├───alerts
-│   │       page.tsx
-│   │
-│   ├───dashboard
-│   │       page.tsx
-│   │
-│   ├───incidents
-│   │       page.tsx
-│   │
-│   ├───login
-│   │       page.tsx
-│   │
-│   └───logs
-│           page.tsx
-│
-├───components
-│       DashboardWidget.tsx
-│       FiltersPanel.tsx
-│       LogsModal.tsx
-│       LogsTable.tsx
-│       Navbar.tsx
-│       Pagination.tsx
-│       RequireAuth.tsx
-│       Sidebar.tsx
-│
-├───lib
-│   │   api.ts
-│   │   auth.ts
-│   │   utils.ts
-│   │
-│   └───hooks
-│           useDebounce.ts
-│
-└───public
-        file.svg
-        globe.svg
-        next.svg
-        vercel.svg
-        window.svg
+Frontend (Next.js)
+app/
+│── login/
+│── dashboard/
+│── logs/
+│── alerts/
+│── incidents/
+components/
+lib/
+public/
 
-
-✅ Frontend .env.local
-NEXT_PUBLIC_API_BASE=http://localhost:8080
-
-✅ Backend .env
-
-Replace YOUR_IP with your machine’s LAN IP (e.g., 192.168.1.10).
-
-LOGS_DB_URI=mongodb://user:password@YOUR_IP:27017/logsdb?authSource=admin
-META_DB_URI=mongodb://user:password@YOUR_IP:27017/metadb?authSource=admin
-JWT_SECRET=supersecretkey
-
-🗄 Database Design
-logsdb (DB1 — High volume)
-Collection	Description
-api_logs	All request logs
-rate_limits	Rate limit hits
-metadb (DB2 — Metadata)
-Collection	Description
-users	Login users (bcrypt hashed passwords)
-incidents	Slow/broken endpoints
-alerts	Alerts generated from logs
-config	Future overrides
 🔐 Authentication
-Login
+Login API
 POST /api/auth/login
 
 
-Body:
+Body
 
 {
   "username": "admin",
@@ -212,51 +92,56 @@ Body:
 }
 
 
-Backend flow:
+Flow
 
-Fetch user from MetaDB
+Validate against metadb
 
-Compare bcrypt hash
+bcrypt password check
 
-Generate JWT (HS256, secure key)
+Generate JWT (HS256)
 
-Return token
+Frontend stores token in: localStorage.token
 
-Frontend stores token in:
-
-localStorage.token
-
-Protected routes:
+Protected Endpoints
 /api/dashboard/**
 /api/logs/**
 /api/alerts/**
 /api/incidents/**
 
-🔍 Logging Interceptor (Microservices)
+🗄 Database Design
+logsdb
+Collection	Description
+api_logs	All API request logs
+rate_limits	Rate limit hit events
+metadb
+Collection	Description
+users	Auth users (bcrypt)
+alerts	Alerts raised by engine
+incidents	Dev-managed incidents
+config	Future overrides
+📡 Collector Log Format (Microservices → Backend)
 
-Each microservice includes a custom interceptor that captures:
-
-Path
-
-Method
-
-Request size / response size
-
-Status
-
-Latency
-
-Timestamp
-
-Service name
-
-Sends data to:
+Every microservice should POST logs to:
 
 POST /collector/log
 
+
+Example Payload
+
+{
+  "service": "orders",
+  "path": "/api/orders",
+  "method": "POST",
+  "status": 200,
+  "requestSize": 512,
+  "responseSize": 1200,
+  "latencyMs": 140,
+  "timestamp": "2025-12-09T10:00:00Z"
+}
+
 ⚡ Rate Limiter
 
-Per-service configurable:
+Configurable per service:
 
 monitoring:
   rateLimit:
@@ -264,76 +149,102 @@ monitoring:
     limit: 100
 
 
-If exceeded → log "rate-limit-hit" event.
+When exceeded → stored as rate-limit-hit event.
 
-📊 Dashboard
+📊 Dashboard Modules
 Widgets
 
 Slow Requests
 
 Broken Requests (5xx)
 
-Avg Latency
+Average Latency
 
 Top 5 Slow Endpoints
 
-Error Rate Chart
-
-Plots last 60 minutes of errors.
+Error Rate (last 60 mins)
 
 Logs Explorer
 
-Filter by service, endpoint, date, status
+Filter by:
 
-Shows slow & rate-limit-hit logs
+Service
+
+Endpoint
+
+Status
+
+Date
+
+Slow requests
+
+Rate-limit events
 
 Alerts
 
-Generated automatically when:
+Automatically created when:
 
-Status 5xx
+Status: 5xx
 
-Latency > 500ms
+Latency: > 500ms
 
-Rate limit exceeded
+Rate limit hit
 
 Incidents
 
-Developer can mark issues as Resolved.
+Create incidents from alerts
 
-▶️ Running the Backend
-1. Start backend
+Mark as resolved
+
+🟩 Environment Setup
+Frontend .env.local
+NEXT_PUBLIC_API_BASE=http://localhost:8080
+
+Backend .env
+
+Replace YOUR_IP with LAN IP (e.g., 192.168.1.10):
+
+LOGS_DB_URI=mongodb://user:password@YOUR_IP:27017/logsdb?authSource=admin
+META_DB_URI=mongodb://user:password@YOUR_IP:27017/metadb?authSource=admin
+JWT_SECRET=supersecretkey
+
+▶️ Running the Project
+Backend
 ./gradlew bootRun
 
-2. Default URLs
-Backend: http://localhost:8080
-Actuator: http://localhost:8080/actuator/health
-Login API: http://localhost:8080/api/auth/login
 
-▶️ Running the Frontend
+Available at:
+
+Backend: http://localhost:8080
+
+Health Check: http://localhost:8080/actuator/health
+
+Frontend
 npm install
 npm run dev
 
 
-Runs at:
-
+Accessible at:
 http://localhost:3000
 
-👤 Default Login User
+👤 Default Login
 
-Created with UserSeeder:
+Created via UserSeeder:
 
-username: admin  
+username: admin
 password: admin123
 
 
-After first successful login → remove the seeder file.
+Remove UserSeeder.kt after first login in production.
 
-📌 Non-Functional Requirements Completed
+✔ Non-Functional Achievements
 
-✔ Modular code
-✔ Concurrency safe
-✔ Works with two MongoDB clusters
-✔ JWT security
-✔ Rich dashboard
-✔ Logs & incidents stored independently
+Thread-safe & modular services
+
+Works with two MongoDB clusters
+
+Decoupled logs & incidents
+
+JWT-secured APIs
+
+Rich visual dashboard
