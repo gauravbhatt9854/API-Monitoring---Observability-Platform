@@ -1,0 +1,15 @@
+server:
+  port: 8080
+
+spring:
+  data:
+    mongodb:
+      logs:
+        uri: ${LOGS_DB_URI}
+      meta:
+        uri: ${META_DB_URI}
+
+monitoring:
+  rateLimit:
+    service: orders
+    limit: 120
